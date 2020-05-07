@@ -9,6 +9,18 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+function validateId(req, res, next) {
+  const { id } = req.params;
+
+  if(!isUuid(id)){
+      return res.status(400).json({error: "Invalid ID"});
+  }
+
+  return next();
+}
+
+app.use('/repositories/:id', validateId);
+
 const repositories = [];
 
 app.get("/repositories", (request, response) => {
@@ -75,7 +87,7 @@ app.post("/repositories/:id/like", (request, response) => {
   const repository = repositories[repositoryIndex];
   repository.likes++;
 
-  return response.json(repository);
+  return response.json(repository);''
 });
 
 module.exports = app;
